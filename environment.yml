@@ -1,0 +1,13 @@
+name: graph-slam
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - gtsam=4.2.0
+  - numpy
+  - matplotlib=3.7.3
+  - graphviz
+  - python-graphviz
+  - pytest
+  - ipykernel
+  - pip

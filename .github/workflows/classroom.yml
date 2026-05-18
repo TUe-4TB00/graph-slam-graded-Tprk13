@@ -1,0 +1,122 @@
+name: Classroom Autograding
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Conda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        activate-environment: graph-slam
+        environment-file: environment.yml
+        auto-activate-base: false
+
+    - name: Verify environment
+      shell: bash -l {0}
+      run: |
+        python --version
+        conda info
+        conda list
+        python -c "import gtsam; print('GTSAM imported successfully')"
+
+    - name: Add pose 1a
+      id: add_pose_1a
+      continue-on-error: true
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: "Add pose 1a tests"
+        command: "bash -l -c 'pytest tests/test_1a_add_pose.py -q --maxfail=1'"
+        timeout: 10
+        max-score: 1
+
+    - name: Add pose 1b
+      id: add_pose_1b
+      continue-on-error: true
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: "Add pose 1b tests"
+        command: "bash -l -c 'pytest tests/test_1b_add_pose.py -q --maxfail=1'"
+        timeout: 10
+        max-score: 1
+
+    - name: Add landmark measurement 2a
+      id: add_landmark_measurement_2a
+      continue-on-error: true
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: "Add landmark measurement 2a tests"
+        command: "bash -l -c 'pytest tests/test_2a_add_landmark_measurement.py -q --maxfail=1'"
+        timeout: 10
+        max-score: 1
+
+    - name: Add landmark measurement 2b
+      id: add_landmark_measurement_2b
+      continue-on-error: true
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: "Add landmark measurement 2b tests"
+        command: "bash -l -c 'pytest tests/test_2b_add_landmark_measurement.py -q --maxfail=1'"
+        timeout: 10
+        max-score: 1
+
+    - name: Pose 5 marginals 3a
+      id: pose_5_marginals_3a
+      continue-on-error: true
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: "Pose 5 marginals 3a tests"
+        command: "bash -l -c 'pytest tests/test_3a_pose_5_marginals.py -q --maxfail=1'"
+        timeout: 10
+        max-score: 1
+
+    - name: Pose 5 marginals 3b
+      id: pose_5_marginals_3b
+      continue-on-error: true
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: "Pose 5 marginals 3b tests"
+        command: "bash -l -c 'pytest tests/test_3b_pose_5_marginals.py -q --maxfail=1'"
+        timeout: 10
+        max-score: 1
+
+    - name: Pose 5 errors 4a
+      id: pose_5_errors_4a
+      continue-on-error: true
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: "Pose 5 errors 4a tests"
+        command: "bash -l -c 'pytest tests/test_4a_pose_5_errors.py -q --maxfail=1'"
+        timeout: 10
+        max-score: 1
+
+    - name: Pose 5 errors 4b
+      id: pose_5_errors_4b
+      continue-on-error: true
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: "Pose 5 errors 4b tests"
+        command: "bash -l -c 'pytest tests/test_4b_pose_5_errors.py -q --maxfail=1'"
+        timeout: 10
+        max-score: 1
+
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        ADD_POSE_1A_RESULTS: "${{ steps.add_pose_1a.outputs.result }}"
+        ADD_POSE_1B_RESULTS: "${{ steps.add_pose_1b.outputs.result }}"
+        ADD_LANDMARK_MEASUREMENT_2A_RESULTS: "${{ steps.add_landmark_measurement_2a.outputs.result }}"
+        ADD_LANDMARK_MEASUREMENT_2B_RESULTS: "${{ steps.add_landmark_measurement_2b.outputs.result }}"
+        POSE_5_MARGINALS_3A_RESULTS: "${{ steps.pose_5_marginals_3a.outputs.result }}"
+        POSE_5_MARGINALS_3B_RESULTS: "${{ steps.pose_5_marginals_3b.outputs.result }}"
+        POSE_5_ERRORS_4A_RESULTS: "${{ steps.pose_5_errors_4a.outputs.result }}"
+        POSE_5_ERRORS_4B_RESULTS: "${{ steps.pose_5_errors_4b.outputs.result }}"
+      with:
+        runners: add_pose_1a,add_pose_1b,add_landmark_measurement_2a,add_landmark_measurement_2b,pose_5_marginals_3a,pose_5_marginals_3b,pose_5_errors_4a,pose_5_errors_4b
